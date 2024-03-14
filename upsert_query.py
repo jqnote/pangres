@@ -97,11 +97,10 @@ class UpsertQuery:
 
         # get the appropriate insert statement
         if if_row_exists == 'update':
-            if len(incr_columns) > 0:
-                update_values = {col: getattr(self.table.c, col) + insert_stmt.inserted[col] for col in incr_columns}
-                upsert = insert_stmt.on_duplicate_key_update(**update_values)
-            else:
-                upsert = insert_stmt.on_duplicate_key_update(**update_cols)
+            if incr_columns:
+                for col in incr_columns:
+                    update_cols[col] = getattr(self.table.c, col) + insert_stmt.inserted[col]
+            upsert = insert_stmt.on_duplicate_key_update(**update_cols)
         else:
             # thanks to: https://stackoverflow.com/a/50870348/10551772
             upsert = insert_stmt.prefix_with('IGNORE')

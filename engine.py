@@ -518,7 +518,7 @@ class PandasSpecialEngine:
                     values[i][j] = str(val)
         return values
 
-    def upsert(self, if_row_exists: str, chunksize: int = 10000, execute: list = []) -> None:
+    def upsert(self, if_row_exists: str, chunksize: int = 10000, execute=None, incr_columns: list = []) -> None:
         """
         Generates and executes an upsert (insert update or
         insert ignore depending on :if_row_exists:) statement
@@ -540,8 +540,11 @@ class PandasSpecialEngine:
         chunksize : int > 0, default 900
             Number of values to be inserted at once,
             an integer strictly above zero.
+            :param execute:
             :param incr_columns:
         """
+        if execute is None:
+            execute = []
         assert if_row_exists in ('ignore', 'update')
         # convert values if needed
         values = self._get_values_to_insert()
@@ -549,7 +552,7 @@ class PandasSpecialEngine:
         chunks = self._create_chunks(values=values, chunksize=chunksize)
         upq = UpsertQuery(connection=self.connection, table=self.table)
         for chunk in chunks:
-            upq.execute(db_type=self._db_type, values=chunk, if_row_exists=if_row_exists, execute=execute)
+            upq.execute(db_type=self._db_type, values=chunk, if_row_exists=if_row_exists, incr_columns=incr_columns)
 
     def upsert_yield(self, if_row_exists: str, chunksize: int = 10000):
         """

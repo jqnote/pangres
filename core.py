@@ -305,7 +305,7 @@ def upsert(con: Connectable,
         executor.execute(connectable=con, if_row_exists=if_row_exists, chunksize=chunksize, incr_columns=incr_columns)
         return None
     else:
-        return executor.execute_yield(connectable=con, if_row_exists=if_row_exists, chunksize=chunksize)
+        return executor.execute_yield(connectable=con, if_row_exists=if_row_exists, chunksize=chunksize, incr_columns=incr_columns)
 
 
 # # Async upsert

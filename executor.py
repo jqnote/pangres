@@ -33,7 +33,7 @@ class Executor:
     def __init__(self, df: pd.DataFrame, table_name: str, schema: Union[str, None],
                  create_schema: bool, create_table: bool,
                  add_new_columns: bool, adapt_dtype_of_empty_db_columns: bool,
-                 dtype: Union[dict, None], incr_columns: list = []) -> None:
+                 dtype: Union[dict, None], incr_columns: list) -> None:
         self.df = df
         self.schema = schema
         self.table_name = table_name
@@ -72,7 +72,7 @@ class Executor:
             pse.add_new_columns()
 
     def execute(self, connectable: Connectable, if_row_exists: str, chunksize: int,
-                incr_columns: list = []) -> None:
+                incr_columns: list) -> None:
         """
         Handles the actual upsert operation.
         :param incr_columns:
